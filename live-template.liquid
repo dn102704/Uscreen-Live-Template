@@ -1,0 +1,98 @@
+
+{{ 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css' | stylesheet_link }} 
+{{ 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css' | stylesheet_link }}
+ {{ 'https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.1/tingle.min.css' | stylesheet_link }} {{ 'livestream_styles.css' | stylesheet_link }}
+
+<div id="streams-objects" style="display: none;"></div>
+<div class="new-live-page">
+
+<!--
+{% if settings.page_blocks.hero_banner.active %}
+{% for program in header_category.programs_preview | limit: 1 %}
+  <div class="hero_banner" data-permalink="{{ program.permalink }}">
+    <div class="hero_banner--background-image js-banner-image">
+    </div>
+    <div class="hero_banner--background-shadow" style="background: {{ settings.page_blocks.hero_banner.shadow_color | to_rgba, opacity: settings.page_blocks.hero_banner.fade }}"></div>
+    <div class="hero_banner--main">
+      <div class="container hero_banner--cta">
+        <div>
+          <h1 class="hero_banner--title">
+            {{ program.title }}
+          </h1>
+          <p class="hero_banner--subtitle js-description">
+           
+          </p>
+          <p class="hero_banner--subtitle js-date">
+           
+          </p>
+          <div class="hero_banner--cta-wrapper">
+            <div class="hero_banner--cta-link">
+              <a href="{{ program.url | link }}" class="btn btn--primary btn--width">
+                {{ settings.page_blocks.hero_banner.cta_text }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}-->
+<section class="live-page-top">
+
+<p class="upcom-session">Upcoming live sessions</p>
+  <h1 class="see-live">See what’s up next</h1>
+    <p class="user-timezone new-time-zone"></p>
+</section>
+<section class="livestream-page new-live-stream">
+  
+
+  <div class="date-slider-wrapper live-new-wrapper">
+    <nav class="date-slider new-dateslider">
+    </nav>
+  </div>
+  <div class="container live-container">
+    <div class="livestream-page__days new-livestream__days">
+      <div class="livestream-page__day-table new-live-table"></div>
+    </div>
+  </div>
+</section>
+</div>
+<script
+
+  src="https://code.jquery.com/jquery-3.6.4.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{{ 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js' | javascript_link }}
+
+{{ 'https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.1/tingle.min.js' | javascript_link }}
+{{ 'add_to_calendar.js' | javascript_link }}
+
+<script>
+$('.user-timezone').html(`All times in: ${new Date().toTimeString().slice(9)}`)
+</script>
+
+
+<script>
+  const USER_GUEST = {{ user.guest }};
+  const USER_SUBSCRIBER = {{ user.subscriber? }};
+  
+  {% if settings.page_blocks.hero_banner.active %}
+    let banner = document.querySelector('.hero_banner')
+    let bannerRequestUrl = banner.dataset.permalink;
+  
+  
+    axios.get(`/api/contents/${bannerRequestUrl}`).then(response => {
+      let program = response.data;
+      console.log('BANNER DATA')
+      console.log(program)
+      document.querySelector('.js-description').innerText = program.preregistration_screen_text
+      if (program.short_description) document.querySelector('.js-date').innerText = new Date(program.short_description.split('|')[0]).toLocaleString('en-US', { day: "2-digit", weekday: 'short', hour: 'numeric', minute: 'numeric', hour12: true })
+      $('.js-banner-image').attr('style', `background-image: url('${program.main_poster}');`)
+    })
+  {% endif %}
+</script>
+
+
+{{ 'new_livestream_script.js' | javascript_link }}
